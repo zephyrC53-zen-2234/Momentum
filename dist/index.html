@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Momentum - Master Skills & Routine Planner</title>
+<link rel="stylesheet" href="momentum.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+const tailwind = {}; tailwind.config = {
+darkMode: 'class',
+theme: {
+extend: {
+fontFamily: {
+sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+},
+colors: {
+accent: {
+400: '#38bdf8',
+500: '#06b6d4',
+600: '#0891b2',
+},
+fire: {
+400: '#fb923c',
+500: '#f97316',
+}
+}
+}
+}
+}
+</script>
+<style>
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+.glow-cyan { box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25); }
+.glow-orange { box-shadow: 0 0 25px -5px rgba(249, 115, 22, 0.25); }
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-slate-950">
+<!-- Navigation Header -->
+<header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+<div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap gap-4 items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 font-black text-slate-950 text-xl">
+M
+</div>
+<div>
+<h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
+MOMENTUM <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold">TRAIN</span>
+</h1>
+<p class="text-[11px] text-slate-400 font-medium">Build strength. Unlock your next skill.</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex bg-slate-950 p-1 rounded-xl border border-slate-800/80 text-xs font-bold">
+<button id="navBtnSkills" onclick="switchMainTab('skills')" class="px-4 py-2 rounded-lg transition bg-cyan-500 text-slate-950 shadow-md">
+🤸 Skill Masterclass
+</button>
+<button id="navBtnWorkouts" onclick="switchMainTab('workouts')" class="px-4 py-2 rounded-lg transition text-slate-400 hover:text-white">
+📅 Weekly Routines
+</button>
+</nav>
+</div>
+</header>
+<!-- Main Content Container -->
+<div class="max-w-6xl w-full mx-auto px-4 py-6 flex-1 flex flex-col gap-6">
+<section class="py-6"><p class="text-cyan-400 text-xs font-bold tracking-widest uppercase">Small steps. Stronger you.</p><h2 class="text-4xl md:text-5xl font-extrabold mt-3 tracking-tight">Build your Momentum<span class="text-cyan-400">.</span></h2><p class="text-slate-400 mt-3 max-w-xl">Your next skill starts with today’s practice. Follow a roadmap, build your foundations, and make every session count.</p></section>
+<!-- Overall Mastery Banner -->
+<div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden backdrop-blur-sm">
+<div class="absolute -right-16 -top-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+<div>
+<span class="text-xs font-semibold text-cyan-400 tracking-wider uppercase">Overall Mastery Status</span>
+<h2 id="overallMasteryHeading" class="text-2xl font-bold text-white">0 Skills Fully Mastered</h2>
+<p class="text-xs text-slate-400 mt-0.5">Complete progression steps to unlock skill badges and track your learning progress.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-xl text-center">
+<span class="block text-[10px] text-slate-400 uppercase font-semibold">Total Steps Completed</span>
+<span id="totalStepsCompleted" class="text-lg font-extrabold text-cyan-400">0 / 0</span>
+</div>
+<div class="bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-xl text-center">
+<span class="block text-[10px] text-slate-400 uppercase font-semibold">Roadmap Completed</span>
+<span id="overallReadinessPercent" class="text-lg font-extrabold text-orange-400">0%</span>
+</div>
+</div>
+</div>
+<!-- Mastery Progress Bar -->
+<div class="w-full bg-slate-950 rounded-full h-2.5 mt-4 border border-slate-800/60 overflow-hidden">
+<div id="overallProgressBar" class="bg-gradient-to-r from-cyan-500 via-emerald-400 to-orange-500 h-2.5 rounded-full w-0 transition-all duration-500"></div>
+</div>
+</div>
+<!-- VIEW 1: SKILL MASTERCLASS MODULE -->
+<main id="viewSkills" class="space-y-6">
+<!-- Skill Selector Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Kip-Up Card -->
+<div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selectSkill('kipup')" id="cardSkillKipup" class="skill-card cursor-pointer bg-slate-900/80 border-2 border-cyan-500/80 rounded-2xl p-4 transition-all duration-200 hover:border-cyan-400 glow-cyan">
+<div class="flex justify-between items-start mb-2">
+<span class="text-2xl">⚡</span>
+<span id="badgeKipup" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">In Progress</span>
+</div>
+<h3 class="font-bold text-lg text-white">Gymnastic Kip-Up</h3>
+<p class="text-xs text-slate-400 mt-1 line-clamp-2">Explosive floor pop onto your feet from your back.</p>
+<div class="mt-4 pt-3 border-t border-slate-800/60 flex justify-between text-xs font-semibold text-slate-400">
+<span>Progression:</span>
+<span id="progressTextKipup" class="text-cyan-400">0/4 Steps</span>
+</div>
+</div>
+<!-- Handstand Card -->
+<div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selectSkill('handstand')" id="cardSkillHandstand" class="skill-card cursor-pointer bg-slate-900/40 border border-slate-800 rounded-2xl p-4 transition-all duration-200 hover:border-slate-700">
+<div class="flex justify-between items-start mb-2">
+<span class="text-2xl">🤸</span>
+<span id="badgeHandstand" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">Not Started</span>
+</div>
+<h3 class="font-bold text-lg text-white">Freestanding Handstand</h3>
+<p class="text-xs text-slate-400 mt-1 line-clamp-2">Straight line balance, shoulder stack & core control.</p>
+<div class="mt-4 pt-3 border-t border-slate-800/60 flex justify-between text-xs font-semibold text-slate-400">
+<span>Progression:</span>
+<span id="progressTextHandstand" class="text-cyan-400">0/4 Steps</span>
+</div>
+</div>
+<!-- Muscle-Up Card -->
+<div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="selectSkill('muscleup')" id="cardSkillMuscleup" class="skill-card cursor-pointer bg-slate-900/40 border border-slate-800 rounded-2xl p-4 transition-all duration-200 hover:border-slate-700">
+<div class="flex justify-between items-start mb-2">
+<span class="text-2xl">💪</span>
+<span id="badgeMuscleup" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">Not Started</span>
+</div>
+<h3 class="font-bold text-lg text-white">Bar Muscle-Up</h3>
+<p class="text-xs text-slate-400 mt-1 line-clamp-2">Explosive pull to chest and transition over the bar.</p>
+<div class="mt-4 pt-3 border-t border-slate-800/60 flex justify-between text-xs font-semibold text-slate-400">
+<span>Progression:</span>
+<span id="progressTextMuscleup" class="text-cyan-400">0/4 Steps</span>
+</div>
+</div>
+</div>
+<!-- Active Skill Roadmap Details -->
+<section id="skillDetailSection" class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+<!-- Rendered via JS based on selected skill -->
+</section>
+</main>
+<!-- VIEW 2: WORKOUT ROUTINES MODULE -->
+<main id="viewWorkouts" class="hidden space-y-6">
+<!-- Routine Selector Tabs -->
+<button id="tabRoutineBeginner" onclick="selectRoutine('beginner')" class="px-4 py-2 rounded-xl bg-slate-800 text-cyan-400 text-xs font-bold">🌱 Beginner: Full Body</button>
+<div class="flex flex-wrap gap-2">
+<button onclick="selectRoutine('skill_day')" id="tabRoutineSkill" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-cyan-400 border border-cyan-500/40">
+🔥 Routine A: Skill & Explosiveness
+</button>
+<button onclick="selectRoutine('push_pull')" id="tabRoutinePushPull" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-950 text-slate-400 border border-slate-800 hover:text-white">
+💪 Routine B: Upper Body Push / Pull
+</button>
+<button onclick="selectRoutine('core_flex')" id="tabRoutineCoreFlex" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-950 text-slate-400 border border-slate-800 hover:text-white">
+🛡️ Routine C: Core & Wrist Conditioning
+</button>
+</div>
+<!-- Workout Active Container -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Exercise List Log -->
+<div class="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+<div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-800">
+<div>
+<h3 id="routineTitle" class="text-xl font-bold text-white">Skill & Explosiveness Focus</h3>
+<p id="routineDesc" class="text-xs text-slate-400 mt-1">Recommended 3x a week. Warm up thoroughly before starting.</p>
+</div>
+<span id="routineDuration" class="text-xs bg-slate-950 text-slate-300 border border-slate-800 px-3 py-1.5 rounded-lg font-medium">⏱️ ~35 mins</span>
+</div>
+<div id="exerciseList" class="space-y-4">
+<!-- Rendered dynamically -->
+</div>
+</div>
+<!-- Sidebar: Rest Timer & Workout Summary -->
+<div class="space-y-6">
+<!-- Rest Timer Card -->
+<div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 text-center shadow-xl">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inter-Set Rest Timer</span>
+<div id="timerDisplay" class="text-4xl font-extrabold text-cyan-400 my-3 font-mono">01:00</div>
+<div class="flex gap-2 justify-center">
+<button onclick="startTimer(45)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-lg border border-slate-700 text-slate-300">45s</button>
+<button onclick="startTimer(60)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-lg border border-slate-700 text-slate-300">60s</button>
+<button onclick="startTimer(90)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-lg border border-slate-700 text-slate-300">90s</button>
+<button onclick="stopTimer()" class="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-xs font-bold rounded-lg border border-red-500/40 text-red-400">Stop</button>
+</div>
+</div>
+<!-- Weekly Schedule Tracker Card -->
+<div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl">
+<h4 class="font-bold text-sm text-white mb-3">Weekly Schedule Blueprint</h4>
+<div class="space-y-2 text-xs">
+<div class="flex justify-between items-center p-2 rounded-lg bg-slate-950 border border-slate-800">
+<span class="font-semibold text-slate-300">Mon & Thu</span>
+<span class="text-cyan-400 font-bold">Skill Day (Kip-Up / Handstand)</span>
+</div>
+<div class="flex justify-between items-center p-2 rounded-lg bg-slate-950 border border-slate-800">
+<span class="font-semibold text-slate-300">Tue & Fri</span>
+<span class="text-orange-400 font-bold">Upper Body Push/Pull</span>
+</div>
+<div class="flex justify-between items-center p-2 rounded-lg bg-slate-950 border border-slate-800">
+<span class="font-semibold text-slate-300">Wed & Sat</span>
+<span class="text-emerald-400 font-bold">Core & Wrist Conditioning</span>
+</div>
+<div class="flex justify-between items-center p-2 rounded-lg bg-slate-950 border border-slate-800">
+<span class="font-semibold text-slate-300">Sunday</span>
+<span class="text-slate-500 font-bold">Active Recovery & Mobility</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<footer class="text-center text-xs text-slate-500 py-6 border-t border-slate-900">
+<p id="storageNote">Momentum • Your progress is saved on this browser</p>
+</footer>
+<!-- Javascript State & Logic -->
+<script>
+// --- SKILLS DATABASE ---
+const SKILLS_DATA = {
+kipup: {
+id: 'kipup',
+title: 'Gymnastic Kip-Up',
+tagline: 'Explosive Floor Pop onto Your Feet',
+icon: '⚡',
+difficulty: 'Intermediate',
+prerequisites: ['Bridge Stretch', 'Candlestick Roll', 'Hollow Body Hold'],
+steps: [
+{
+id: 'kip_step_1',
+title: 'Step 1: Candlestick Roll to Hand Placement',
+cue: 'Roll back on your shoulders. Place hands flat next to ears, palms facing down, fingers pointing toward feet.',
+pitfall: 'Placing hands too far from shoulders reduces push leverage.',
+reps: '3 sets x 8 clean rolls'
+},
+{
+id: 'kip_step_2',
+title: 'Step 2: Explosive 45-Degree Hip Extension',
+cue: 'Kick your legs upwards and diagonally at 45 degrees—NOT straight up. Extend hips forcefully.',
+pitfall: 'Kicking straight up sends your momentum into the ceiling instead of lifting your body off the floor.',
+reps: '3 sets x 5 explosive pop reps'
+},
+{
+id: 'kip_step_3',
+title: 'Step 3: The Hand Push & Quick Heel Tuck',
+cue: 'As your hips reach full extension, push hard through your palms and instantly snap your knees/heels under your body.',
+pitfall: 'Hesitating on the push or keeping legs straight during landing.',
+reps: '4 sets x 5 assisted attempts'
+},
+{
+id: 'kip_step_4',
+title: 'Step 4: Unassisted Kip-Up & Solid Landing',
+cue: 'Land on the balls of your feet with knees bent, staying low to absorb impact before standing upright.',
+pitfall: 'Trying to land completely upright with stiff knees.',
+reps: 'Mastery: 3 clean consecutive reps'
+}
+]
+},
+handstand: {
+id: 'handstand',
+title: 'Freestanding Handstand',
+tagline: 'Shoulder Stacking & Micro-Balancing',
+icon: '🤸',
+difficulty: 'Beginner-Intermediate',
+prerequisites: ['30s Wall Plank', 'Pike Hold', 'Wrist Conditioning'],
+steps: [
+{
+id: 'hs_step_1',
+title: 'Step 1: Chest-to-Wall Handstand Hold',
+cue: 'Walk feet up the wall. Squeeze glutes, tuck pelvis, and press actively through shoulders into the ground.',
+pitfall: 'Arching your lower back (banana back). Keep core hollow.',
+reps: '3 sets x 30 sec hold'
+},
+{
+id: 'hs_step_2',
+title: 'Step 2: Toe Taps & Finger Camber Micro-Balancing',
+cue: 'Lightly tap one foot off the wall. Grip floor with fingertips ("finger camber") to control balance.',
+pitfall: 'Bending elbows when losing balance. Keep arms locked straight.',
+reps: '3 sets x 10 light taps'
+},
+{
+id: 'hs_step_3',
+title: 'Step 3: Kick-up Consistency',
+cue: 'Lunge into kick-up. Lead with hips over shoulders, keeping gaze between your thumbs.',
+pitfall: 'Under-kicking or over-kicking into uncontrolled bailouts.',
+reps: '5 sets x 5 clean kick-up attempts'
+},
+{
+id: 'hs_step_4',
+title: 'Step 4: 10-Second Freestanding Hold',
+cue: 'Balance freely in open space. Adjust pressure continuously between palm heels and fingertips.',
+pitfall: 'Holding breath. Maintain steady breathing.',
+reps: 'Mastery: 3 holds over 10 seconds'
+}
+]
+},
+muscleup: {
+id: 'muscleup',
+title: 'Bar Muscle-Up',
+tagline: 'Explosive Pull & High Transition',
+icon: '💪',
+difficulty: 'Advanced',
+prerequisites: ['10 Chest-to-Bar Pull-Ups', '15 Straight Bar Dips'],
+steps: [
+{
+id: 'mu_step_1',
+title: 'Step 1: The Hollow Kip Swing',
+cue: 'Swing under the bar smoothly, keeping a tight hollow body shape at the back of the swing.',
+pitfall: 'Bending knees or loose core during the swing.',
+reps: '3 sets x 8 swing repetitions'
+},
+{
+id: 'mu_step_2',
+title: 'Step 2: Explosive High Pull-To-Waist',
+cue: 'Pull the bar down towards your hips in an arc motion, leaning slightly back.',
+pitfall: 'Pulling straight up into the bar instead of pulling around it.',
+reps: '4 sets x 4 high pull reps'
+},
+{
+id: 'mu_step_3',
+title: 'Step 3: Fast Head-Over-Bar Transition',
+cue: 'As the bar reaches lower chest, aggressively drive your head and shoulders forward over the bar.',
+pitfall: 'Transitioning one arm at a time (chicken winging). Keep both arms even.',
+reps: '4 sets x 3 negative muscle-ups / band assisted'
+},
+{
+id: 'mu_step_4',
+title: 'Step 4: Straight Bar Dip Lockout',
+cue: 'Press out from the bottom of the bar dip to full arm extension.',
+pitfall: 'Dropping down before locking out.',
+reps: 'Mastery: 3 clean Muscle-Ups'
+}
+]
+}
+};
+// --- WORKOUT ROUTINES DATABASE ---
+const ROUTINES_DATA = {
+skill_day: {
+title: "Routine A: Skill & Explosiveness Focus",
+desc: "Designed for mastering Kip-Ups & Handstand kick-ups with fresh muscle energy.",
+duration: "~35 mins",
+exercises: [
+{ name: "Wrist & Shoulder Mobility Drills", sets: "2 Sets", target: "10 Circles each direction", note: "Crucial warmup for wrist safety" },
+{ name: "Candlestick Explosive Pops", sets: "4 Sets", target: "5 Reps", note: "Focus on 45-degree hip extension" },
+{ name: "Wall Handstand Balance Holds", sets: "3 Sets", target: "20-30 Sec Hold", note: "Grip floor tightly with fingers" },
+{ name: "Hollow Body Rock Holds", sets: "3 Sets", target: "45 Sec Hold", note: "Lower back pressed flat on floor" }
+]
+},
+push_pull: {
+title: "Routine B: Upper Body Push / Pull Strength",
+desc: "Builds foundational upper body strength required for advanced bar skills.",
+duration: "~45 mins",
+exercises: [
+{ name: "Explosive Chest-to-Bar Pull-Ups", sets: "4 Sets", target: "6-8 Reps", note: "Pull as high as possible" },
+{ name: "Pike Push-Ups (or Handstand Push-Ups)", sets: "4 Sets", target: "8-10 Reps", note: "Targets overhead pressing power" },
+{ name: "Straight Bar Dips / Bench Dips", sets: "3 Sets", target: "10-12 Reps", note: "Lock out fully at top" },
+{ name: "Inverted Australian Rows", sets: "3 Sets", target: "12 Reps", note: "Squeeze shoulder blades together" }
+]
+},
+core_flex: {
+title: "Routine C: Core & Wrist Conditioning",
+desc: "Strengthens compression core and wrists to prevent common injuries.",
+duration: "~30 mins",
+exercises: [
+{ name: "L-Sit Holds (or Tucked L-Sit)", sets: "4 Sets", target: "15-20 Sec Hold", note: "Push shoulders down away from ears" },
+{ name: "First Knuckle Push-Ups", sets: "3 Sets", target: "10 Reps", note: "Wrist strengthener for handstands" },
+{ name: "Arch / Superman Back Extensions", sets: "3 Sets", target: "12 Reps", note: "Posterior chain balance" },
+{ name: "Dragon Flag / Hanging Leg Raises", sets: "3 Sets", target: "8 Reps", note: "Strict form, no swinging" }
+]
+}
+};
+SKILLS_DATA.foundation = {
+id:'foundation', title:'Bodyweight Foundations', tagline:'Control, balance, and your first strength milestones', icon:'🌱', difficulty:'Beginner', prerequisites:['Comfortable space to move'], steps:[
+{id:'base_1', title:'Step 1: Incline Push-Up', cue:'Use a stable elevated surface. Keep your body straight and lower with control.',pitfall:'Letting the hips sag. Raise the surface to make it easier.',reps:'3 sets × 5–8 reps'},
+{id:'base_2',title:'Step 2: Bodyweight Squat',cue:'Keep feet planted and sit down between your hips to a comfortable depth.',pitfall:'Rushing the lowering phase.',reps:'3 sets × 8 reps'},
+{id:'base_3',title:'Step 3: Incline Row',cue:'Use a secure bar. Pull your chest toward it with your body straight.',pitfall:'Using unsecured furniture as an anchor.',reps:'3 sets × 5–8 reps'},
+{id:'base_4',title:'Step 4: Controlled Plank',cue:'Press the floor away and breathe while keeping your trunk steady.',pitfall:'Holding your breath or losing your body position.',reps:'3 holds × 20 seconds'}]};
+ROUTINES_DATA.beginner={title:'Beginner: Full Body Foundations',desc:'Practice on nonconsecutive days, with rest between sessions. Choose variations you can control.',duration:'~25 mins',exercises:[
+{name:'Easy Movement & Joint Warmup',sets:'1 Round',target:'5 Minutes',note:'Start gently and move through comfortable ranges'},
+{name:'Incline Push-Ups',sets:'3 Sets',target:'5–8 Reps',note:'Use a stable surface; higher is easier'},
+{name:'Bodyweight Squats',sets:'3 Sets',target:'8 Reps',note:'Move slowly through a comfortable depth'},
+{name:'Incline Rows',sets:'3 Sets',target:'5–8 Reps',note:'Use a secure bar and keep your body straight'},
+{name:'Plank',sets:'3 Sets',target:'15–20 Sec',note:'Keep breathing; stop the hold when form slips'}]};
+// --- APPLICATION STATE ---
+let completedSteps = [];
+try { const saved = JSON.parse(localStorage.getItem('momentum_completed_steps')); if(Array.isArray(saved)) completedSteps = [...new Set(saved)].filter(id => Object.values(SKILLS_DATA).some(s => s.steps.some(step => step.id === id))); } catch {}
+let activeSkillId = 'kipup';
+let activeRoutineId = 'skill_day';
+let timerInterval = null;
+// --- INITIALIZATION ---
+window.onload = function() {
+const card = document.createElement('div'); card.id='cardSkillFoundation'; card.tabIndex=0; card.setAttribute('role','button'); card.onclick=()=>selectSkill('foundation'); card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click()}}; card.innerHTML='<span class="text-2xl">🌱</span><h3 class="font-bold text-lg mt-2">Bodyweight Foundations</h3><p class="text-xs text-slate-400 mt-1">Start here: build strength and control.</p><div class="flex justify-between mt-4 text-xs"><span id="badgeFoundation">Not Started</span><span id="progressTextFoundation"></span></div>'; document.getElementById('cardSkillKipup').parentElement.prepend(card);
+selectSkill('foundation');
+renderRoutine('skill_day');
+updateOverallStats();
+};
+// --- TAB SWITCHING ---
+function switchMainTab(tab) {
+const viewSkills = document.getElementById('viewSkills');
+const viewWorkouts = document.getElementById('viewWorkouts');
+const navBtnSkills = document.getElementById('navBtnSkills');
+const navBtnWorkouts = document.getElementById('navBtnWorkouts');
+if (tab === 'skills') {
+viewSkills.classList.remove('hidden');
+viewWorkouts.classList.add('hidden');
+navBtnSkills.className = "px-4 py-2 rounded-lg transition bg-cyan-500 text-slate-950 shadow-md font-bold";
+navBtnWorkouts.className = "px-4 py-2 rounded-lg transition text-slate-400 hover:text-white font-bold";
+} else {
+viewSkills.classList.add('hidden');
+viewWorkouts.classList.remove('hidden');
+navBtnWorkouts.className = "px-4 py-2 rounded-lg transition bg-cyan-500 text-slate-950 shadow-md font-bold";
+navBtnSkills.className = "px-4 py-2 rounded-lg transition text-slate-400 hover:text-white font-bold";
+}
+}
+// --- SKILL SELECTION & RENDERING ---
+function selectSkill(skillId) {
+activeSkillId = skillId;
+const skill = SKILLS_DATA[skillId];
+// Update card highlight borders
+Object.keys(SKILLS_DATA).forEach(id => {
+const card = document.getElementById(`cardSkill${id.charAt(0).toUpperCase() + id.slice(1)}`);
+if (id === skillId) {
+card.className = "skill-card cursor-pointer bg-slate-900/80 border-2 border-cyan-500/80 rounded-2xl p-4 transition-all duration-200 glow-cyan";
+} else {
+card.className = "skill-card cursor-pointer bg-slate-900/40 border border-slate-800 rounded-2xl p-4 transition-all duration-200 hover:border-slate-700";
+}
+});
+renderSkillDetail(skill);
+}
+function renderSkillDetail(skill) {
+const container = document.getElementById('skillDetailSection');
+let stepsHtml = '';
+skill.steps.forEach((step, index) => {
+const isDone = completedSteps.includes(step.id);
+stepsHtml += `<div class="p-4 rounded-xl border ${isDone ? 'bg-cyan-950/20 border-cyan-500/40' : 'bg-slate-950/70 border-slate-800'} transition"> <div class="flex flex-col sm:flex-row items-start justify-between gap-3"> <div class="flex items-start gap-3"> <input type="checkbox" id="${step.id}" ${isDone ? 'checked' : ''} onchange="toggleStep('${step.id}')" aria-label="Complete ${step.title}" class="mt-1 w-5 h-5 rounded border-slate-700 text-cyan-500 focus:ring-cyan-400 focus:ring-offset-slate-950 bg-slate-900 cursor-pointer"> <div> <h4 class="font-bold text-sm text-white ${isDone ? 'line-through text-slate-400' : ''}">${step.title}</h4> <p class="text-xs text-slate-300 mt-1"><strong class="text-cyan-400">Key Cue:</strong> ${step.cue}</p> <p class="text-xs text-slate-400 mt-0.5"><strong class="text-orange-400">Pitfall to Avoid:</strong> ${step.pitfall}</p> </div> </div> <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-1 rounded font-mono shrink-0">${step.reps}</span> </div> </div>`;
+});
+let prereqsHtml = skill.prerequisites.map(p => `<span class="text-xs bg-slate-800 text-slate-300 border border-slate-700/60 px-2.5 py-1 rounded-md font-medium">${p}</span>`).join(' ');
+container.innerHTML = `
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-800">
+<div><p class="text-cyan-400 text-xs font-bold uppercase tracking-widest mb-2">${skill.difficulty}</p><h2 class="text-2xl font-extrabold">${skill.icon} ${skill.title}</h2><p class="text-sm text-slate-400 mt-2">${skill.tagline}</p></div>
+<div><p class="text-xs text-slate-400 mb-2">Build these foundations first</p><div class="flex flex-wrap gap-2">${prereqsHtml}</div></div></div>
+<h3 class="font-bold mb-4">Your progression roadmap</h3><div class="space-y-3">${stepsHtml}</div>`;
+}
+
+function toggleStep(stepId) {
+if (completedSteps.includes(stepId)) {
+completedSteps = completedSteps.filter(id => id !== stepId);
+} else {
+completedSteps.push(stepId);
+}
+try { localStorage.setItem('momentum_completed_steps', JSON.stringify(completedSteps)); } catch { document.getElementById('storageNote').textContent = 'Progress is available for this session. Browser storage is unavailable.'; }
+renderSkillDetail(SKILLS_DATA[activeSkillId]);
+updateOverallStats();
+}
+// --- OVERALL STATS UPDATE ---
+function updateOverallStats() {
+let totalStepsCount = 0;
+let completedStepsCount = completedSteps.length;
+Object.keys(SKILLS_DATA).forEach(skillId => {
+const skill = SKILLS_DATA[skillId];
+const skillStepIds = skill.steps.map(s => s.id);
+totalStepsCount += skillStepIds.length;
+const skillDoneCount = skillStepIds.filter(id => completedSteps.includes(id)).length;
+// Update skill card badge & text
+const progressEl = document.getElementById(`progressText${skillId.charAt(0).toUpperCase() + skillId.slice(1)}`);
+const badgeEl = document.getElementById(`badge${skillId.charAt(0).toUpperCase() + skillId.slice(1)}`);
+if (progressEl) progressEl.textContent = `${skillDoneCount}/${skillStepIds.length} Steps`;
+if (badgeEl) {
+if (skillDoneCount === skillStepIds.length) {
+badgeEl.textContent = 'MASTERED';
+badgeEl.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+} else if (skillDoneCount > 0) {
+badgeEl.textContent = 'In Progress';
+badgeEl.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30';
+} else {
+badgeEl.textContent = 'Not Started';
+badgeEl.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700';
+}
+}
+});
+// Fully Mastered Skills Count
+let masteredSkillsCount = 0;
+Object.keys(SKILLS_DATA).forEach(skillId => {
+const skillStepIds = SKILLS_DATA[skillId].steps.map(s => s.id);
+if (skillStepIds.every(id => completedSteps.includes(id))) {
+masteredSkillsCount++;
+}
+});
+const readinessPercent = totalStepsCount === 0 ? 0 : Math.round((completedStepsCount / totalStepsCount) * 100);
+document.getElementById('overallMasteryHeading').textContent = `${masteredSkillsCount} of ${Object.keys(SKILLS_DATA).length} Skills Mastered`;
+document.getElementById('totalStepsCompleted').textContent = `${completedStepsCount} / ${totalStepsCount}`;
+document.getElementById('overallReadinessPercent').textContent = `${readinessPercent}%`;
+document.getElementById('overallProgressBar').style.width = `${readinessPercent}%`;
+}
+// --- WORKOUT ROUTINES LOGIC ---
+function selectRoutine(routineId) {
+activeRoutineId = routineId;
+const tabSkill = document.getElementById('tabRoutineSkill');
+const tabPushPull = document.getElementById('tabRoutinePushPull');
+const tabCoreFlex = document.getElementById('tabRoutineCoreFlex');
+[tabSkill, tabPushPull, tabCoreFlex, document.getElementById('tabRoutineBeginner')].forEach(tab => {
+tab.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-950 text-slate-400 border border-slate-800 hover:text-white";
+});
+if (routineId === 'skill_day') {
+tabSkill.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-cyan-400 border border-cyan-500/40";
+} else if (routineId === 'push_pull') {
+tabPushPull.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-orange-400 border border-orange-500/40";
+} else if (routineId === 'core_flex') {
+tabCoreFlex.className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-slate-800 text-emerald-400 border border-emerald-500/40";
+}
+if(routineId === 'beginner') document.getElementById('tabRoutineBeginner').className = tabSkill.className + ' text-cyan-400 ring-1 ring-cyan-500';
+renderRoutine(routineId);
+}
+function renderRoutine(routineId) {
+const routine = ROUTINES_DATA[routineId];
+document.getElementById('routineTitle').textContent = routine.title;
+document.getElementById('routineDesc').textContent = routine.desc;
+document.getElementById('routineDuration').textContent = `⏱️ ${routine.duration}`;
+const listContainer = document.getElementById('exerciseList');
+let html = '';
+routine.exercises.forEach((ex, idx) => {
+html += `<div class="p-4 rounded-xl bg-slate-950/70 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3"> <div> <h4 class="font-bold text-sm text-white">${idx + 1}. ${ex.name}</h4> <p class="text-xs text-slate-400 mt-0.5">${ex.note}</p> </div> <div class="flex items-center gap-3 shrink-0"> <span class="text-xs bg-slate-800 text-cyan-300 px-2.5 py-1 rounded-md font-semibold">${ex.sets}</span> <span class="text-xs bg-slate-900 border border-slate-700 text-slate-300 px-2.5 py-1 rounded-md font-mono">${ex.target}</span> </div> </div>`;
+});
+listContainer.innerHTML = html;
+}
+// --- REST TIMER LOGIC ---
+function startTimer(seconds) {
+stopTimer();
+let timeLeft = seconds;
+updateTimerDisplay(timeLeft);
+const deadline = Date.now() + seconds * 1000;
+timerInterval = setInterval(() => {
+timeLeft = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+updateTimerDisplay(timeLeft);
+if (timeLeft <= 0) {
+stopTimer();
+document.getElementById('timerDisplay').textContent = "DONE!";
+}
+}, 1000);
+}
+function stopTimer() {
+if (timerInterval) clearInterval(timerInterval); timerInterval = null;
+document.getElementById('timerDisplay').textContent = "00:00";
+}
+function updateTimerDisplay(seconds) {
+const mins = Math.floor(seconds / 60);
+const secs = seconds % 60;
+document.getElementById('timerDisplay').textContent =
+`${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+</script>
+</body>
+<script src="momentum.js"></script>
+</html>
